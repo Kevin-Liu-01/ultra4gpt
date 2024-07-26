@@ -9,8 +9,11 @@ import {
   Flex,
   Text,
   ScrollArea,
-  SelectSeparator,
+  Select,
+  Separator,
   Tooltip,
+  Box,
+  Grid,
 } from "@radix-ui/themes";
 import { CornerRightDown, Scan, Undo } from "lucide-react";
 export default function Editor({
@@ -100,17 +103,32 @@ export default function Editor({
     };
   };
 
+  //link to / with the image in url
+  const HandleSave = () => {
+    return (
+      <Link
+        href={{
+          pathname: "/",
+          query: { image: croppedImage || originalImage },
+        }}
+        className="bg-primary rounded-xl p-4 text-3xl font-semibold"
+      >
+        Save Selection
+      </Link>
+    );
+  };
+
   return (
     <ScrollArea
       type="always"
       scrollbars="vertical"
-      className="mx-auto my-auto flex items-center justify-center sm:h-screen"
+      className="text-dark sm:h-screen"
     >
-      <div className="p-6 sm:p-12">
+      <div className="bg-light p-6 sm:p-12">
         <h2 className="text-dark text-3xl font-extrabold tracking-tight">
           EDITOR
         </h2>
-        <SelectSeparator />
+        <Separator />
         <Flex gap="3">
           <Tooltip content="Scan another image">
             <Link href="/camera">
@@ -138,7 +156,7 @@ export default function Editor({
             </button>
           </Tooltip>
         </Flex>
-        <SelectSeparator />
+        <Separator />
         <Text className="flex">
           Crop your image to highlight your food <CornerRightDown />
         </Text>
@@ -151,16 +169,17 @@ export default function Editor({
         >
           <img src={image} alt="Original Image" />
         </ReactCrop>
+        <HandleSave />
       </div>
-      {/* <Box className="row-span-1">
+      <Flex direction="column" justify="center" align="center" className="">
         {croppedImage && (
           <img
             src={croppedImage}
-            className="border-dark mx-auto my-auto rounded-md border border-dashed"
+            className="border-dark my-auto flex rounded-md border border-dashed"
             alt="Cropped Image"
           />
         )}
-      </Box> */}
+      </Flex>
     </ScrollArea>
   );
 }

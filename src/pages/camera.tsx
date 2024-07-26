@@ -1,15 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-//@ts-nocheck
 import Image from "next/image";
 import Link from "next/link";
 import Webcam from "react-webcam";
 import { useCallback, useRef, useState } from "react";
 import {
   Box,
-  SelectSeparator,
+  Separator,
   Grid,
   Button,
   Flex,
@@ -26,17 +21,17 @@ import {
   FileEdit,
 } from "lucide-react";
 
-import CameraButton from "./cameraButton";
+import CameraButton from "../components/webcam/cameraButton";
 
 export default function Camera() {
-  const webcamRef = useRef(null);
-  const [imgSrc, setImgSrc] = useState(null);
-  const [prevImg, setPrevImg] = useState(null);
-  const [mirrored, setMirrored] = useState(false);
-  const [imageSmoothing, setImageSmoothing] = useState(false);
+  const webcamRef = useRef<Webcam | null>(null);
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
+  const [prevImg, setPrevImg] = useState<string | null>(null);
+  const [mirrored, setMirrored] = useState<boolean>(false);
+  const [imageSmoothing, setImageSmoothing] = useState<boolean>(false);
   const [forceScreenshotSourceSize, setForceScreenshotSourceSize] =
-    useState(false);
-  const [facingMode, setFacingMode] = useState("environment");
+    useState<boolean>(false);
+  const [facingMode, setFacingMode] = useState<string>("environment");
 
   const videoConstraints = {
     facingMode: "environment",
@@ -45,15 +40,19 @@ export default function Camera() {
   const retake = () => {
     setImgSrc(null);
   };
-  // create a capture function
+
   const capture = useCallback(() => {
-    const imageSrc = webcamRef?.current?.getScreenshot();
-    setImgSrc(imageSrc);
-    setPrevImg(imageSrc);
+    if (webcamRef.current) {
+      const imageSrc = webcamRef.current.getScreenshot();
+      if (imageSrc) {
+        setImgSrc(imageSrc);
+        setPrevImg(imageSrc);
+      }
+    }
   }, [webcamRef]);
 
   return (
-    <div className="font-primary flex h-screen w-full flex-col items-center justify-center gap-12">
+    <div className="font-primary text-dark flex h-screen w-full flex-col items-center justify-center gap-1">
       <Grid columns="4" gap="0" width="100%" height="100%">
         <Box className="bg-dark col-span-4 sm:col-span-3">
           {imgSrc ? (
@@ -82,7 +81,7 @@ export default function Camera() {
           <h1 className="text-dark text-xl font-extrabold tracking-tight sm:text-5xl">
             SMILE <span className="text-primary">{":)"}</span>
           </h1>
-          <SelectSeparator />
+          <Separator />
           <Flex gap="3">
             <CameraButton
               message="Mirror Image"
@@ -126,12 +125,12 @@ export default function Camera() {
               <div className="border-dark mx-auto my-auto h-20 w-20 rounded-full border"></div>
             </button>
           </div>
-          <SelectSeparator />
+          <Separator />
           <Text size="2" className="">
             Take a picture of your ingredients! Make sure they are all in frame
             and the lighting is good.
           </Text>
-          <SelectSeparator />
+          <Separator />
 
           {prevImg ? (
             <Link
@@ -152,18 +151,17 @@ export default function Camera() {
               </Button>
             </Tooltip>
           )}
-          {
-            <div className="border-dark relative mt-2 hidden w-full items-center justify-center rounded-md border-2 border-dashed sm:mt-auto sm:flex">
-              <Image
-                src={prevImg ? prevImg : "/assets/defaultscreenshot.png"}
-                className="w-full"
-                height={100}
-                width={100}
-                alt="screenshot"
-              />
-              {!prevImg && <CameraOff className="absolute text-gray-300" />}
-            </div>
-          }
+
+          <div className="border-dark relative mt-2 hidden w-full items-center justify-center rounded-md border-2 border-dashed sm:mt-auto sm:flex">
+            <Image
+              src={prevImg ? prevImg : "/assets/defaultscreenshot.png"}
+              className="w-full"
+              height={100}
+              width={100}
+              alt="screenshot"
+            />
+            {!prevImg && <CameraOff className="absolute text-gray-300" />}
+          </div>
         </Box>
       </Grid>
     </div>

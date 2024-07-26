@@ -5,9 +5,9 @@ import { type AppType } from "next/app";
 import { Theme } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
 
-import { api } from "~/utils/api";
+import { api } from "../utils/api";
 
-import "~/styles/globals.css";
+import "../styles/globals.css";
 import "@radix-ui/themes/styles.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
